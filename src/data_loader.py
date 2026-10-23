@@ -1,9 +1,201 @@
 import os
 import re
+import json
+import zipfile
+import tempfile
+import urllib.request
+import urllib.error
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Callable
 import numpy as np
 import pandas as pd
+
+ZENODO_RECORD_API_URL = "https://zenodo.org/api/records/4656140"
+DEFAULT_DATA_DIR = "data"
+EXPECTED_DATASET_FILENAME = "electricity_hourly_dataset.tsf"
+DEFAULT_DATASET_PATH = os.path.join(DEFAULT_DATA_DIR, EXPECTED_DATASET_FILENAME)
+
+
+def get_zenodo_file_metadata(
+    record_url: str = ZENODO_RECORD_API_URL,
+    timeout: int = 30
+) -> Dict[str, str]:
+    """
+    Queries Zenodo's public record metadata API to locate the download URL
+    and filename for the dataset.
+    """
+    req = urllib.request.Request(
+        record_url,
+        headers={"Accept": "application/json"}
+    )
+    with urllib.request.urlopen(req, timeout=timeout) as response:
+        if response.status != 200:
+            raise RuntimeError(f"Zenodo API responded with status {response.status}")
+        data = json.loads(response.read().decode("utf-8"))
+
+    files = data.get("files", [])
+    if not files:
+        raise RuntimeError(f"No files found in Zenodo record: {record_url}")
+
+    # Find the matching file entry (either direct .tsf or the archive containing it)
+    chosen_file = None
+    for f in files:
+        name = f.get("key", "")
+        if "electricity" in name.lower():
+            chosen_file = f
+            break
+
+    if not chosen_file:
+        chosen_file = files[0]
+
+    filename = chosen_file.get("key", "")
+    links = chosen_file.get("links", {})
+    file_url = links.get("content") or links.get("self")
+    if not file_url:
+        raise RuntimeError(f"Could not extract direct download URL from Zenodo record for file: {filename}")
+
+    return {
+        "filename": filename,
+        "url": file_url,
+        "size": chosen_file.get("size", 0),
+        "checksum": chosen_file.get("checksum", "")
+    }
+
+
+def validate_tsf_file(file_path: str, min_size_bytes: int = 1000) -> bool:
+    """
+    Validates that the file exists, is non-empty, and contains valid TSF header tokens.
+    """
+    if not os.path.exists(file_path):
+        return False
+    if os.path.getsize(file_path) < min_size_bytes:
+        return False
+
+    has_data_tag = False
+    with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+        for _ in range(200):
+            line = f.readline()
+            if not line:
+                break
+            line = line.strip()
+            if line.startswith("@data"):
+                has_data_tag = True
+                break
+
+    return has_data_tag
+
+
+def ensure_dataset_available(
+    target_path: str = DEFAULT_DATASET_PATH,
+    progress_callback: Optional[Callable[[float, str], None]] = None,
+    timeout: int = 60
+) -> str:
+    """
+    Ensures that the required .tsf dataset is available locally.
+    1. If the file exists and is valid, returns immediately.
+    2. If missing or invalid, queries Zenodo's metadata API for record 4656140.
+    3. Streams the download to disk in chunks to avoid high memory consumption.
+    4. Extracts/places the .tsf file atomically, cleaning up temp files.
+    5. Validates the resulting .tsf file before returning.
+    """
+    target_path = os.path.abspath(target_path)
+    if os.path.exists(target_path) and validate_tsf_file(target_path):
+        return target_path
+
+    # Ensure parent directory exists
+    parent_dir = os.path.dirname(target_path)
+    os.makedirs(parent_dir, exist_ok=True)
+
+    if progress_callback:
+        progress_callback(0.05, "Contacting Zenodo metadata repository for dataset details...")
+
+    metadata = get_zenodo_file_metadata(timeout=timeout)
+    file_url = metadata["url"]
+    remote_filename = metadata["filename"]
+    total_size = metadata.get("size", 0)
+
+    if progress_callback:
+        progress_callback(0.15, f"Downloading {remote_filename} from Zenodo...")
+
+    # Download to a temporary file
+    temp_download = tempfile.NamedTemporaryFile(delete=False, dir=parent_dir, suffix="_download")
+    temp_download_path = temp_download.name
+
+    try:
+        req = urllib.request.Request(file_url)
+        with urllib.request.urlopen(req, timeout=timeout) as response:
+            content_length = response.headers.get("Content-Length")
+            if content_length:
+                try:
+                    total_size = int(content_length)
+                except ValueError:
+                    pass
+
+            downloaded = 0
+            chunk_size = 64 * 1024  # 64 KB chunks for streaming
+            while True:
+                chunk = response.read(chunk_size)
+                if not chunk:
+                    break
+                temp_download.write(chunk)
+                downloaded += len(chunk)
+                if progress_callback and total_size > 0:
+                    pct = min(0.15 + 0.70 * (downloaded / total_size), 0.85)
+                    progress_callback(pct, f"Downloaded {downloaded / (1024 * 1024):.1f} MB of {total_size / (1024 * 1024):.1f} MB...")
+
+        temp_download.close()
+
+        if progress_callback:
+            progress_callback(0.88, "Verifying and preparing dataset file...")
+
+        # If the downloaded file is a zip archive, extract the target .tsf file
+        if zipfile.is_zipfile(temp_download_path):
+            with zipfile.ZipFile(temp_download_path, "r") as zf:
+                tsf_names = [n for n in zf.namelist() if n.endswith(".tsf")]
+                if not tsf_names:
+                    raise ValueError(f"Zip archive from Zenodo does not contain a .tsf file: {zf.namelist()}")
+                chosen_tsf = tsf_names[0]
+                # Extract directly to atomic temp file in target directory
+                atomic_temp_tsf = tempfile.NamedTemporaryFile(delete=False, dir=parent_dir, suffix=".tsf_temp")
+                atomic_temp_path = atomic_temp_tsf.name
+                with zf.open(chosen_tsf) as source:
+                    while True:
+                        buf = source.read(64 * 1024)
+                        if not buf:
+                            break
+                        atomic_temp_tsf.write(buf)
+                atomic_temp_tsf.close()
+                # Atomically replace target
+                os.replace(atomic_temp_path, target_path)
+        else:
+            # Direct file download
+            os.replace(temp_download_path, target_path)
+
+        if not validate_tsf_file(target_path):
+            if os.path.exists(target_path):
+                os.remove(target_path)
+            raise ValueError(f"Downloaded file at {target_path} failed TSF format validation.")
+
+        if progress_callback:
+            progress_callback(1.0, "Dataset ready!")
+
+        return target_path
+
+    except Exception:
+        # Clean up any leftover temp files on error
+        if os.path.exists(temp_download_path):
+            try:
+                os.remove(temp_download_path)
+            except OSError:
+                pass
+        raise
+    finally:
+        # Guarantee temp download file is cleaned up if it still exists
+        if os.path.exists(temp_download_path):
+            try:
+                os.remove(temp_download_path)
+            except OSError:
+                pass
 
 
 def parse_tsf_metadata(file_path: str) -> Dict:

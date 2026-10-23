@@ -6,7 +6,13 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 import base64
-from src.data_loader import parse_tsf_metadata, get_available_series, load_series
+from src.data_loader import (
+    parse_tsf_metadata,
+    get_available_series,
+    load_series,
+    ensure_dataset_available,
+    DEFAULT_DATASET_PATH,
+)
 from src.eda import (
     compute_summary_statistics,
     plot_historical_series,
@@ -516,7 +522,12 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-DATA_PATH = os.path.join("data", "electricity_hourly_dataset.tsf")
+DATA_PATH = os.path.abspath(os.path.join("data", "electricity_hourly_dataset.tsf"))
+
+# Automatically ensure dataset is present (without re-downloading if already available)
+@st.cache_resource(show_spinner=False)
+def init_dataset(target_path: str = DATA_PATH) -> str:
+    return ensure_dataset_available(target_path)
 
 # Data Caching for snappy responsiveness
 @st.cache_data(show_spinner=False)
@@ -531,6 +542,31 @@ def load_cached_series_list():
 def load_cached_series(series_name: str):
     return load_series(DATA_PATH, series_name=series_name)
 
+# Ensure dataset is ready before rendering
+dataset_ready = False
+try:
+    if not os.path.exists(DATA_PATH):
+        with st.status("Fetching electricity benchmark dataset from Zenodo...", expanded=True) as status_box:
+            st.write("Initializing data directory and contacting Zenodo record 4656140...")
+            def _ui_progress(pct: float, msg: str):
+                st.write(f"[{int(pct * 100)}%] {msg}")
+            ensure_dataset_available(DATA_PATH, progress_callback=_ui_progress)
+            status_box.update(label="Dataset acquired successfully!", state="complete", expanded=False)
+    else:
+        init_dataset(DATA_PATH)
+    dataset_ready = True
+except Exception as exc:
+    st.error(
+        f"**Dataset Initialization Error**: Unable to prepare the electricity dataset.\n\n"
+        f"**Details**: `{str(exc)}`\n\n"
+        "**Retry Guidance**:\n"
+        "- Refresh the page or click **Rerun** in the top-right menu to try downloading again.\n"
+        "- If running in an air-gapped or restricted network environment, ensure access to `https://zenodo.org`.\n"
+        "- Alternatively, manually download the file from [Zenodo Record 4656140](https://zenodo.org/records/4656140) "
+        "and place `electricity_hourly_dataset.tsf` inside the `data/` folder."
+    )
+    st.stop()
+
 # Sidebar Control Panel
 with st.sidebar:
     # 1. Compact branded header
@@ -544,11 +580,6 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
     
-    # Dataset check
-    if not os.path.exists(DATA_PATH):
-        st.error(f"Dataset not found at `{DATA_PATH}`. Please place `electricity_hourly_dataset.tsf` in `data/`.")
-        st.stop()
-        
     with st.spinner("Indexing dataset series..."):
         series_list = load_cached_series_list()
 
