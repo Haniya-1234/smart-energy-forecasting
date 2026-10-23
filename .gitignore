@@ -1,0 +1,22 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+
+# Local dataset
+data/electricity_hourly_dataset.tsf
+
+# Secrets
+.env
+.streamlit/secrets.toml
+
+# Test and editor caches
+.pytest_cache/
+.coverage
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
