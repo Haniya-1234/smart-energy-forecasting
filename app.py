@@ -85,38 +85,63 @@ st.markdown("""
         font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
         background-color: #F5F2E9 !important;
         color: #171717 !important;
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+        box-sizing: border-box;
     }
 
-    /* Main container padding */
+    *, *:before, *:after {
+        box-sizing: border-box;
+    }
+
+    /* Main container fluid responsive padding */
     .block-container {
-        padding-top: 1.6rem !important;
-        padding-bottom: 3rem !important;
-        padding-left: 2.2rem !important;
-        padding-right: 2.2rem !important;
+        padding-top: 1.2rem !important;
+        padding-bottom: 2.5rem !important;
+        padding-left: 1.2rem !important;
+        padding-right: 1.2rem !important;
         max-width: 1400px;
+        width: 100% !important;
+    }
+
+    @media (min-width: 768px) {
+        .block-container {
+            padding-top: 1.6rem !important;
+            padding-bottom: 3rem !important;
+            padding-left: 1.8rem !important;
+            padding-right: 1.8rem !important;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .block-container {
+            padding-left: 2.2rem !important;
+            padding-right: 2.2rem !important;
+        }
     }
 
     /* Sidebar consistent warm styling */
     section[data-testid="stSidebar"] {
         background-color: #EFECE3 !important;
         border-right: 1px solid #E3DDD0 !important;
+        max-width: 100vw !important;
     }
     section[data-testid="stSidebar"] > div:first-child {
         background-color: #EFECE3 !important;
     }
     section[data-testid="stSidebar"] .block-container {
-        padding-top: 1.2rem !important;
+        padding-top: 1rem !important;
         padding-bottom: 2rem !important;
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
+        padding-left: 0.85rem !important;
+        padding-right: 0.85rem !important;
     }
 
     /* Sidebar Brand Header */
     .sidebar-brand {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 10px 14px;
+        gap: 10px;
+        padding: 10px 12px;
         background: #FFFEFA;
         border: 1px solid #E8E2D5;
         border-radius: 12px;
@@ -124,27 +149,28 @@ st.markdown("""
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
     }
     .sidebar-brand-icon {
-        width: 38px;
-        height: 38px;
+        width: 36px;
+        height: 36px;
         border-radius: 10px;
         background: linear-gradient(135deg, #F45112 0%, #F4BE25 100%);
         display: flex;
         align-items: center;
         justify-content: center;
         color: #FFFFFF;
-        font-size: 1.25rem;
+        font-size: 1.2rem;
         box-shadow: 0 2px 6px rgba(244, 81, 18, 0.35);
         flex-shrink: 0;
     }
     .sidebar-brand-title {
-        font-size: 1.05rem;
+        font-size: 1rem;
         font-weight: 800;
-        letter-spacing: 0.04em;
+        letter-spacing: 0.03em;
         color: #171717;
         line-height: 1.15;
+        word-break: break-word;
     }
     .sidebar-brand-sub {
-        font-size: 0.72rem;
+        font-size: 0.70rem;
         font-weight: 600;
         color: #F45112;
         letter-spacing: 0.02em;
@@ -177,15 +203,18 @@ st.markdown("""
         background: #FFFEFA;
         border: 1px solid #E8E2D5;
         border-radius: 10px;
-        padding: 10px 12px;
-        margin-bottom: 0.6rem;
+        padding: 8px 10px;
+        margin-bottom: 0.5rem;
         box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        max-width: 100% !important;
+        overflow: hidden;
     }
 
     section[data-testid="stSidebar"] label {
         color: #171717 !important;
         font-size: 0.8rem !important;
         font-weight: 700 !important;
+        word-break: break-word;
     }
 
     /* Radio button pills enhancement */
@@ -193,12 +222,14 @@ st.markdown("""
         background: #FAF7F0;
         border: 1px solid #E8E2D5;
         border-radius: 8px;
-        padding: 6px 10px;
+        padding: 6px 8px;
         margin-bottom: 4px;
         display: flex;
         align-items: center;
         transition: all 0.15s ease;
         cursor: pointer;
+        font-size: 0.82rem;
+        word-break: break-word;
     }
     section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] > label:hover {
         background: #FFF;
@@ -226,34 +257,36 @@ st.markdown("""
 
     /* Sidebar Footer */
     .sidebar-footer {
-        margin-top: 1.2rem;
-        padding: 10px 12px;
+        margin-top: 1rem;
+        padding: 8px 10px;
         background: rgba(255, 254, 250, 0.7);
         border: 1px dashed #DCD5C6;
         border-radius: 8px;
         font-size: 0.72rem;
         color: #787164;
         line-height: 1.4;
+        word-break: break-word;
     }
     .sidebar-footer b {
         color: #171717;
     }
 
-    /* Hero section split styling */
+    /* Hero section responsive styling */
     .hero-container {
         background: linear-gradient(135deg, #FFFEFA 0%, #FAF6EE 60%, #F5EFE0 100%);
         border: 1px solid #E8E2D5;
-        border-radius: 20px;
-        padding: 24px 28px;
-        margin-bottom: 1.6rem;
+        border-radius: 18px;
+        padding: 18px 20px;
+        margin-bottom: 1.4rem;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0,0,0,0.02);
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        gap: 24px;
+        gap: 20px;
         overflow: hidden;
         position: relative;
+        width: 100%;
     }
     .hero-container::before {
         content: "";
@@ -266,6 +299,7 @@ st.markdown("""
     }
     .hero-content {
         flex: 1.4;
+        min-width: 0;
         z-index: 1;
     }
     .hero-badge {
@@ -275,66 +309,102 @@ st.markdown("""
         background: rgba(244, 81, 18, 0.08);
         border: 1px solid rgba(244, 81, 18, 0.25);
         color: #C23B06;
-        font-size: 0.76rem;
+        font-size: 0.74rem;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
-        padding: 4px 10px;
+        letter-spacing: 0.05em;
+        padding: 3px 8px;
         border-radius: 999px;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
+        max-width: 100%;
+        white-space: normal;
+        word-break: break-word;
     }
     .hero-title {
-        font-size: 2.2rem;
+        font-size: clamp(1.4rem, 3.5vw, 2.2rem);
         font-weight: 800;
         color: #171717;
-        line-height: 1.15;
+        line-height: 1.2;
         letter-spacing: -0.02em;
-        margin: 0 0 8px 0;
+        margin: 0 0 6px 0;
+        word-break: break-word;
     }
     .hero-subtitle {
-        font-size: 1.05rem;
+        font-size: clamp(0.9rem, 2vw, 1.05rem);
         font-weight: 600;
         color: #F45112;
         margin: 0 0 6px 0;
+        line-height: 1.3;
+        word-break: break-word;
     }
     .hero-desc {
-        font-size: 0.88rem;
+        font-size: clamp(0.8rem, 1.6vw, 0.88rem);
         color: #5C5850;
         line-height: 1.45;
         margin: 0;
         max-width: 620px;
+        word-break: break-word;
     }
     .hero-image-wrap {
         flex: 1;
-        max-width: 380px;
-        border-radius: 14px;
+        max-width: 360px;
+        min-width: 180px;
+        border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 4px 14px rgba(0,0,0,0.08);
         border: 1px solid #E8E2D5;
+        flex-shrink: 0;
     }
     .hero-image-wrap img {
         width: 100%;
-        height: 155px;
+        height: auto;
+        max-height: 155px;
         object-fit: cover;
         display: block;
     }
 
-    /* KPI Cards */
+    @media (max-width: 768px) {
+        .hero-container {
+            flex-direction: column-reverse;
+            align-items: stretch;
+            padding: 16px 16px 16px 20px;
+            gap: 16px;
+        }
+        .hero-image-wrap {
+            max-width: 100%;
+            width: 100%;
+        }
+        .hero-image-wrap img {
+            max-height: 130px;
+        }
+    }
+
+    /* KPI Responsive Grid */
     .kpi-grid {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 14px;
-        margin-bottom: 1.6rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin-bottom: 1.4rem;
+        width: 100%;
     }
+
+    @media (max-width: 480px) {
+        .kpi-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+    }
+
     .kpi-card {
         background-color: #FFFEFA;
         border: 1px solid #E8E2D5;
-        border-radius: 14px;
-        padding: 16px 18px;
+        border-radius: 12px;
+        padding: 14px 16px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.03);
         transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
         position: relative;
         overflow: hidden;
+        min-width: 0;
     }
     .kpi-card:hover {
         transform: translateY(-2px);
@@ -345,38 +415,45 @@ st.markdown("""
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
+        gap: 6px;
     }
     .kpi-label {
-        font-size: 0.74rem;
+        font-size: 0.72rem;
         font-weight: 700;
         color: #787164;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.05em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .kpi-icon-pill {
-        width: 28px;
-        height: 28px;
-        border-radius: 8px;
+        width: 26px;
+        height: 26px;
+        border-radius: 7px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         background: #FAF6EE;
         border: 1px solid #E8E2D5;
+        flex-shrink: 0;
     }
     .kpi-val {
-        font-size: 1.65rem;
+        font-size: clamp(1.25rem, 2.5vw, 1.6rem);
         font-weight: 800;
         color: #171717;
         letter-spacing: -0.02em;
-        line-height: 1.1;
-        margin-bottom: 4px;
+        line-height: 1.15;
+        margin-bottom: 3px;
+        word-break: break-word;
     }
     .kpi-sub {
-        font-size: 0.72rem;
+        font-size: 0.70rem;
         color: #8C8476;
         font-weight: 500;
+        line-height: 1.25;
     }
     .kpi-accent-orange {
         border-top: 3px solid #F45112;
@@ -393,12 +470,14 @@ st.markdown("""
         background-color: #FFFEFA;
         border: 1px solid #E8E2D5;
         border-left: 4px solid #F4BE25;
-        padding: 12px 18px;
+        padding: 12px 16px;
         border-radius: 10px;
-        margin-bottom: 1.4rem;
-        font-size: 0.85rem;
+        margin-bottom: 1.2rem;
+        font-size: clamp(0.78rem, 1.8vw, 0.85rem);
+        line-height: 1.45;
         color: #38342D;
         box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        word-break: break-word;
     }
     .disclaimer-box b {
         color: #171717;
@@ -406,22 +485,36 @@ st.markdown("""
 
     /* Streamlit Tabs Navigation styling */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
+        gap: 6px;
         background-color: #EBE5D8;
-        padding: 6px;
+        padding: 5px;
         border-radius: 12px;
         border: 1px solid #DFD8C8;
+        display: flex;
+        overflow-x: auto !important;
+        flex-wrap: nowrap;
+        scrollbar-width: thin;
+        -webkit-overflow-scrolling: touch;
+    }
+    .stTabs [data-baseweb="tab-list"]::-webkit-scrollbar {
+        height: 4px;
+    }
+    .stTabs [data-baseweb="tab-list"]::-webkit-scrollbar-thumb {
+        background: #C4BCAC;
+        border-radius: 4px;
     }
     .stTabs [data-baseweb="tab"] {
-        height: 40px;
-        padding: 6px 18px;
+        height: 38px;
+        padding: 4px 12px;
         background-color: transparent;
         border-radius: 8px;
         color: #5C5850 !important;
         font-weight: 600;
-        font-size: 0.88rem;
+        font-size: clamp(0.75rem, 1.5vw, 0.88rem);
         border: none !important;
         transition: all 0.15s ease;
+        white-space: nowrap;
+        flex-shrink: 0;
     }
     .stTabs [data-baseweb="tab"]:hover {
         color: #171717 !important;
@@ -442,9 +535,11 @@ st.markdown("""
         background-color: #FFFEFA;
         border: 1px solid #E8E2D5;
         border-radius: 14px;
-        padding: 20px 22px;
+        padding: 16px 18px;
         margin-bottom: 1.2rem;
         box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+        max-width: 100%;
+        word-break: break-word;
     }
 
     /* Model comparison metric boxes */
@@ -452,25 +547,28 @@ st.markdown("""
         background-color: #FFFEFA;
         border: 1px solid #E8E2D5;
         border-radius: 12px;
-        padding: 18px;
+        padding: 14px 16px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         height: 100%;
+        min-width: 0;
+        margin-bottom: 0.5rem;
     }
     .model-card-header {
-        font-size: 0.95rem;
+        font-size: 0.90rem;
         font-weight: 700;
         color: #171717;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
+        word-break: break-word;
     }
     .model-metric-row {
         display: flex;
         justify-content: space-between;
-        padding: 6px 0;
+        padding: 5px 0;
         border-bottom: 1px dashed #EDE7D8;
-        font-size: 0.86rem;
+        font-size: 0.82rem;
     }
     .model-metric-row:last-child {
         border-bottom: none;
@@ -485,10 +583,18 @@ st.markdown("""
         color: #171717;
     }
 
+    /* Responsive Plotly Containers */
+    .js-plotly-plot, .plot-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden;
+    }
+
     /* Subheadings within content */
     h2, h3, h4 {
         color: #171717 !important;
         font-weight: 700 !important;
+        word-break: break-word;
     }
 
     /* Sidebar headers and widgets */
@@ -496,6 +602,7 @@ st.markdown("""
     section[data-testid="stSidebar"] h4 {
         color: #171717 !important;
         font-weight: 700;
+        word-break: break-word;
     }
     section[data-testid="stSidebar"] .stSelectbox label,
     section[data-testid="stSidebar"] .stRadio label,
@@ -503,7 +610,7 @@ st.markdown("""
     section[data-testid="stSidebar"] .stSlider label {
         color: #2F2B23 !important;
         font-weight: 600;
-        font-size: 0.85rem;
+        font-size: 0.82rem;
     }
 
     /* Buttons and controls */
@@ -514,6 +621,8 @@ st.markdown("""
         border-radius: 8px !important;
         font-weight: 600 !important;
         padding: 0.4rem 1rem !important;
+        max-width: 100%;
+        word-break: break-word;
     }
     .stButton>button:hover {
         background-color: #DD430B !important;
@@ -552,6 +661,8 @@ try:
                 st.write(f"[{int(pct * 100)}%] {msg}")
             ensure_dataset_available(DATA_PATH, progress_callback=_ui_progress)
             status_box.update(label="Dataset acquired successfully!", state="complete", expanded=False)
+        st.toast("⚡ Dataset acquired and validated successfully!", icon="✅")
+        st.rerun()
     else:
         init_dataset(DATA_PATH)
     dataset_ready = True
@@ -863,7 +974,12 @@ with tab_forecast:
     fig_backtest.add_trace(go.Scatter(x=results_df["timestamp"], y=results_df["Exponential Smoothing"], mode="lines", name="Holt-Winters ETS", line=dict(color="#059669", width=2)))
     fig_backtest.add_trace(go.Scatter(x=results_df["timestamp"], y=results_df["ML Lag Model"], mode="lines", name="ML Lag Model (Ridge)", line=dict(color="#D97706", width=2)))
     fig_backtest.update_layout(
-        title=dict(text=f"Held-Out Backtest Comparison: Actual vs Predicted (Last {backtest_days} Days / {backtest_hours} Hours)", font=dict(color="#171717", size=14, weight="bold")),
+        title=dict(
+            text=f"Held-Out Backtest Comparison: Actual vs Predicted (Last {backtest_days} Days / {backtest_hours} Hours)",
+            font=dict(color="#171717", size=14, weight="bold"),
+            x=0,
+            xanchor="left"
+        ),
         xaxis=dict(
             title="Timestamp",
             title_font=dict(color="#171717", size=12),
@@ -881,9 +997,17 @@ with tab_forecast:
         paper_bgcolor="#FFFEFA",
         plot_bgcolor="#FFFEFA",
         hovermode="x unified",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(color="#171717")),
-        margin=dict(l=40, r=40, t=60, b=40),
-        height=420
+        legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.22,
+            xanchor="left",
+            x=0,
+            font=dict(color="#171717", size=11)
+        ),
+        margin=dict(l=20, r=20, t=50, b=65),
+        height=420,
+        autosize=True
     )
     st.plotly_chart(fig_backtest, use_container_width=True)
 
@@ -910,7 +1034,12 @@ with tab_forecast:
     fig_future.add_trace(go.Scatter(x=future_df["timestamp"], y=future_df["forecast_kw"], mode="lines+markers", name="Operational Forecast (Holt-Winters + Naive)", line=dict(color="#059669", width=2.5)))
     fig_future.add_trace(go.Scatter(x=future_df["timestamp"], y=future_df["naive_baseline_kw"], mode="lines", name="Seasonal Baseline Reference", line=dict(dash="dot", color="#8C8476")))
     fig_future.update_layout(
-        title=dict(text=f"Out-of-Sample Electricity Demand Forecast ({forecast_horizon} Hours)", font=dict(color="#171717", size=14, weight="bold")),
+        title=dict(
+            text=f"Out-of-Sample Electricity Demand Forecast ({forecast_horizon} Hours)",
+            font=dict(color="#171717", size=14, weight="bold"),
+            x=0,
+            xanchor="left"
+        ),
         xaxis=dict(
             title="Forecast Timeline",
             title_font=dict(color="#171717", size=12),
@@ -928,9 +1057,17 @@ with tab_forecast:
         paper_bgcolor="#FFFEFA",
         plot_bgcolor="#FFFEFA",
         hovermode="x unified",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(color="#171717")),
-        margin=dict(l=40, r=40, t=60, b=40),
-        height=430
+        legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.22,
+            xanchor="left",
+            x=0,
+            font=dict(color="#171717", size=11)
+        ),
+        margin=dict(l=20, r=20, t=50, b=65),
+        height=430,
+        autosize=True
     )
     st.plotly_chart(fig_future, use_container_width=True)
     st.caption("ℹ️ **Uncertainty Band Disclosure:** The shaded range is a heuristic empirical uncertainty band (±1.96 standard deviation of recent 168h differenced residuals) representing historical volatility, rather than a statistically calibrated parametric prediction interval.")
@@ -966,7 +1103,12 @@ with tab_anomaly:
         ))
 
     fig_anom.update_layout(
-        title=dict(text="Detected Consumption Anomalies vs Dynamic Baseline", font=dict(color="#171717", size=14, weight="bold")),
+        title=dict(
+            text="Detected Consumption Anomalies vs Dynamic Baseline",
+            font=dict(color="#171717", size=14, weight="bold"),
+            x=0,
+            xanchor="left"
+        ),
         xaxis=dict(
             title="Timeline",
             title_font=dict(color="#171717", size=12),
@@ -983,9 +1125,17 @@ with tab_anomaly:
         ),
         paper_bgcolor="#FFFEFA",
         plot_bgcolor="#FFFEFA",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(color="#171717")),
-        margin=dict(l=40, r=40, t=60, b=40),
-        height=440
+        legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.22,
+            xanchor="left",
+            x=0,
+            font=dict(color="#171717", size=11)
+        ),
+        margin=dict(l=20, r=20, t=50, b=65),
+        height=440,
+        autosize=True
     )
     st.plotly_chart(fig_anom, use_container_width=True)
 

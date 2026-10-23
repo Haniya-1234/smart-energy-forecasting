@@ -51,7 +51,12 @@ def plot_historical_series(df: pd.DataFrame, series_name: str) -> go.Figure:
         )
     )
     fig.update_layout(
-        title=dict(text=f"Historical Electricity Demand Profile ({series_name})", font=dict(color="#171717", size=15, weight="bold")),
+        title=dict(
+            text=f"Historical Electricity Demand Profile ({series_name})",
+            font=dict(color="#171717", size=15, weight="bold"),
+            x=0,
+            xanchor="left"
+        ),
         xaxis=dict(
             title="Timeline",
             title_font=dict(color="#171717", size=12),
@@ -71,9 +76,17 @@ def plot_historical_series(df: pd.DataFrame, series_name: str) -> go.Figure:
         paper_bgcolor="#FFFEFA",
         plot_bgcolor="#FFFEFA",
         hovermode="x unified",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(color="#171717")),
-        margin=dict(l=40, r=40, t=60, b=40),
-        height=450
+        legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.22,
+            xanchor="left",
+            x=0,
+            font=dict(color="#171717", size=11)
+        ),
+        margin=dict(l=20, r=20, t=50, b=65),
+        height=420,
+        autosize=True
     )
     return fig
 
@@ -122,7 +135,12 @@ def plot_hourly_weekly_profile(df: pd.DataFrame) -> Tuple[go.Figure, go.Figure]:
         )
     )
     fig_hourly.update_layout(
-        title=dict(text="24-Hour Diurnal Demand Pattern", font=dict(color="#171717", size=14, weight="bold")),
+        title=dict(
+            text="24-Hour Diurnal Demand Pattern",
+            font=dict(color="#171717", size=14, weight="bold"),
+            x=0,
+            xanchor="left"
+        ),
         xaxis=dict(
             title="Hour of Day (0-23)",
             tickmode="linear",
@@ -142,9 +160,17 @@ def plot_hourly_weekly_profile(df: pd.DataFrame) -> Tuple[go.Figure, go.Figure]:
         ),
         paper_bgcolor="#FFFEFA",
         plot_bgcolor="#FFFEFA",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(color="#171717")),
-        margin=dict(l=40, r=40, t=50, b=40),
-        height=380
+        legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.25,
+            xanchor="left",
+            x=0,
+            font=dict(color="#171717", size=11)
+        ),
+        margin=dict(l=20, r=20, t=50, b=65),
+        height=380,
+        autosize=True
     )
 
     # Weekly Heatmap
@@ -172,13 +198,23 @@ def plot_hourly_weekly_profile(df: pd.DataFrame) -> Tuple[go.Figure, go.Figure]:
         title="Weekly Load Heatmap (Peak vs Off-Peak Hours)"
     )
     fig_heatmap.update_layout(
-        title=dict(text="Weekly Load Heatmap (Peak vs Off-Peak Hours)", font=dict(color="#171717", size=14, weight="bold")),
+        title=dict(
+            text="Weekly Load Heatmap (Peak vs Off-Peak Hours)",
+            font=dict(color="#171717", size=14, weight="bold"),
+            x=0,
+            xanchor="left"
+        ),
         paper_bgcolor="#FFFEFA",
         plot_bgcolor="#FFFEFA",
-        margin=dict(l=40, r=40, t=50, b=40),
-        xaxis=dict(tickfont=dict(color="#4A4A4A"), title_font=dict(color="#171717")),
-        yaxis=dict(tickfont=dict(color="#4A4A4A"), title_font=dict(color="#171717")),
-        height=380
+        margin=dict(l=20, r=20, t=50, b=40),
+        xaxis=dict(
+            tickfont=dict(color="#4A4A4A", size=10),
+            title_font=dict(color="#171717", size=11),
+            tickangle=-45
+        ),
+        yaxis=dict(tickfont=dict(color="#4A4A4A", size=10), title_font=dict(color="#171717", size=11)),
+        height=380,
+        autosize=True
     )
 
     return fig_hourly, fig_heatmap
@@ -196,7 +232,12 @@ def plot_distribution(df: pd.DataFrame) -> go.Figure:
         title="Demand Distribution and Quartiles"
     )
     fig.update_layout(
-        title=dict(text="Demand Distribution and Quartiles", font=dict(color="#171717", size=14, weight="bold")),
+        title=dict(
+            text="Demand Distribution and Quartiles",
+            font=dict(color="#171717", size=14, weight="bold"),
+            x=0,
+            xanchor="left"
+        ),
         xaxis=dict(
             title="Electricity Consumption (kW)",
             title_font=dict(color="#171717", size=12),
@@ -213,7 +254,8 @@ def plot_distribution(df: pd.DataFrame) -> go.Figure:
         ),
         paper_bgcolor="#FFFEFA",
         plot_bgcolor="#FFFEFA",
-        margin=dict(l=40, r=40, t=50, b=40),
-        height=380
+        margin=dict(l=20, r=20, t=50, b=40),
+        height=380,
+        autosize=True
     )
     return fig
